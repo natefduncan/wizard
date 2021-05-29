@@ -24,4 +24,4 @@ def list_files(path):
     return os.listdir(path)
 
 def get_url():
-    return utils.json_to_dict("data.json").get("server")
+    return json_to_dict("data.json").get("server")
