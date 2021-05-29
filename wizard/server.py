@@ -7,7 +7,7 @@ from wizard.playlist import create_playlist
 
 def stream_playlist(name):
     def generate():
-        with open("wizard/playlist/{name}.mp3", "rb") as fwav:
+        with open(f"wizard/playlist/{name}.mp3", "rb") as fwav:
             data = fwav.read(1024)
             while data:
                 yield data
