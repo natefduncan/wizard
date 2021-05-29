@@ -37,7 +37,7 @@ def playlist(name):
     if name in playlist:
         create_playlist(name, 10)
         #return stream_playlist(name)
-        return send_file(f"playlist/{name}.mp3", as_attachment=False)
+        return send_file(f"playlist/{name}.mp3", as_attachment=True)
     else:
         return jsonify({"message" : "FAILURE"})
 
