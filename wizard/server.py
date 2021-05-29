@@ -1,10 +1,11 @@
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, jsonify, send_file
 app = Flask(__name__)
 
 from wizard import tts
 from wizard import utils
 from wizard.playlist import create_playlist
 
+"""
 def stream_playlist(name):
     def generate():
         with open(f"wizard/playlist/{name}.mp3", "rb") as fwav:
@@ -13,6 +14,7 @@ def stream_playlist(name):
                 yield data
                 data = fwav.read(1024)
     return Response(generate(), mimetype="audio/mpeg3")
+"""
 
 @app.route("/add-file", methods=["POST"])
 def add():
@@ -34,7 +36,8 @@ def playlist(name):
     playlist = d.get("playlists")
     if name in playlist:
         create_playlist(name, 10)
-        return stream_playlist(name)
+        #return stream_playlist(name)
+        return send_file(f"wizard/playlist/{name}.mp3", as_attachment=False)
     else:
         return jsonify({"message" : "FAILURE"})
 
