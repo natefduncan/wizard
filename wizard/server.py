@@ -15,6 +15,14 @@ def stream_playlist(name):
                 data = fwav.read(1024)
     return Response(generate(), mimetype="audio/mpeg3")
 """
+def streamwav(name):
+    def generate():
+        with open(f"wizard/playlist/{name}.wav", "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+    return Response(generate(), mimetype="audio/x-wav")
 
 @app.route("/add-file", methods=["POST"])
 def add():
@@ -22,8 +30,8 @@ def add():
     file_name = request.json.get("file_name")
     if text:
         speech = tts.text_to_speech(text)
-        tts.speech_to_wav(speech, f"wizard/tmp/{file_name}.mp3")
-        utils.mp3_to_wav(f"wizard/tmp/{file_name}.mp3", f"wizard/tmp/{file_name}.wav")
+        tts.speech_to_file(speech, f"wizard/tmp/{file_name}.mp3")
+        utils.mp3_to_wav(f"wizard/tmp/{file_name}.mp3", f"wizard/audio/{file_name}.wav")
         return jsonify({"message" : "OK"})
     else:
         return jsonify({"message" : "FAILURE"})
@@ -37,8 +45,8 @@ def playlist(name):
     playlist = d.get("playlists")
     if name in playlist:
         create_playlist(name, 10)
-        #return stream_playlist(name)
-        return send_file(f"playlist/{name}.wav", as_attachment=True)
+        return streamwav(name)
+        #return send_file(f"playlist/{name}.wav", as_attachment=False)
     else:
         return jsonify({"message" : "FAILURE"})
 

@@ -1,6 +1,7 @@
 import os
 import json
 from pathlib import Path
+from pydub import AudioSegment
 
 def file_to_text(path):
     with open(path) as f:
@@ -26,6 +27,6 @@ def list_files(path):
 def get_url():
     return json_to_dict("data.json").get("server")
 
-def mp3_to_wav(mp3_path, wav_path)
+def mp3_to_wav(mp3_path, wav_path):
     sound = AudioSegment.from_mp3(mp3_path)
     sound.export(wav_path, format="wav")
