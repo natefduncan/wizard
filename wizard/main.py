@@ -20,7 +20,12 @@ def server(host, port):
 @click.command()
 def init():
     ip = input("Type in host and port of server: ")
-    utils.dict_to_json({"server" : ip}, "data.json")
+    try:
+        d = utils.json_to_dict("data.json")
+    except:
+        d = {}
+    d["server"] = ip
+    utils.dict_to_json(d, "data.json")
     click.echo(f'Saved configuration.')
 
 @click.command()
