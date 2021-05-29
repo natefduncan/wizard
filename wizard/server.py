@@ -12,7 +12,7 @@ def stream_playlist(name):
             while data:
                 yield data
                 data = fwav.read(1024)
-    return Response(generate(), mimetype="audio/mpeg")
+    return Response(generate(), mimetype="audio/mpeg3")
 
 @app.route("/add-file", methods=["POST"])
 def add():
