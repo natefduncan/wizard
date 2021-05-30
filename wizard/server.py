@@ -45,8 +45,8 @@ def playlist(name):
     playlist = d.get("playlists")
     if name in playlist:
         create_playlist(name, 10)
-        return streamwav(name)
-        #return send_file(f"playlist/{name}.wav", as_attachment=True)
+        #return streamwav(name)
+        return send_file(f"playlist/{name}.wav", as_attachment=True)
     else:
         return jsonify({"message" : "FAILURE"})
 
