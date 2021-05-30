@@ -20,7 +20,7 @@ def create_playlist(name, length=5):
             output += AudioSegment.silent(duration=2000)
             output += wav 
             output += AudioSegment.silent(duration=2000)
-    repeat = int(length * 60 / len(output) / 1000)
-    output = output * repeat
+    repeat = int(float(length * 60) / float(len(output) / 1000))
+    output = output * max([repeat,1]
     Path('wizard/playlist').mkdir(parents=True, exist_ok=True)
     output.export(f"wizard/playlist/{name}.wav", format="wav")
