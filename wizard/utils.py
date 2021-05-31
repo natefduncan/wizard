@@ -13,7 +13,7 @@ def clear_directory(path):
     shutil.rmtree(path)
     Path(path).mkdir(parents=True, exist_ok=True)
 
-def split_sentence(st): 
+def split_sentences(st): 
     sentences = re.split(r'[.?!]\s*', st)
     if sentences[-1]:
         return sentences

@@ -20,7 +20,6 @@ def streamwav(name):
 @app.route("/add-file", methods=["POST"])
 def add():
     lines = request.json.get("lines")
-    print(lines)
     file_name = request.json.get("file_name")
     if lines:
         Path(f'wizard/static/audio/{file_name}').mkdir(parents=True, exist_ok=True)
