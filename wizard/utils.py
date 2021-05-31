@@ -2,9 +2,23 @@ import os
 import json
 from pathlib import Path
 from pydub import AudioSegment
+import re
+import shutil
+
 
 HOME = os.path.expanduser('~')
 DATA_PATH = f"{HOME}/.wizard/data.json"
+
+def clear_directory(path):
+    shutil.rmtree(path)
+    Path(path).mkdir(parents=True, exist_ok=True)
+
+def split_sentence(st): 
+    sentences = re.split(r'[.?!]\s*', st)
+    if sentences[-1]:
+        return sentences
+    else:
+        return sentences[:-1]
 
 def clean_string(string):
     return string.replace("\n", " ")

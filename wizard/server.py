@@ -24,6 +24,7 @@ def add():
     file_name = request.json.get("file_name")
     if lines:
         Path(f'wizard/static/audio/{file_name}').mkdir(parents=True, exist_ok=True)
+        utils.clear_directory(f'wizard/static/audio/{file_name}')
         for idx, line in enumerate(lines):
             speech = tts.text_to_speech(line)
             tts.speech_to_file(speech, f"wizard/static/audio/{file_name}/{file_name}-{str(idx+1)}.mp3")

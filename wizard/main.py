@@ -34,9 +34,8 @@ def init():
 @click.option('--d', default=".")
 def add(file, d):
     text = utils.file_to_text(file)
-    if d == ".":
-        text = utils.clean_string(text)
-    lines = [i for i in text.split(d) if i.strip()] 
+    text = utils.clean_string(text)
+    lines = [i for i in utils.split_sentences(text) if i.strip()] 
     file_name = utils.get_file_name(file)
     url = utils.get_url()
     if url:
