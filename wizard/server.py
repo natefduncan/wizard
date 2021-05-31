@@ -34,7 +34,7 @@ def add():
 @app.route("/play/<name>")
 def play(name):
     names = [i.replace(".mp3", "") for i in utils.list_files(f"wizard/static/audio/{name}")]
-    names = names.sort(key=lambda x : int(x.split("-")[1])) 
+    names = sorted(names, key=lambda x : int(x.split("-")[1]))
     print(names)
     return render_template("player.html", names=names)
 
