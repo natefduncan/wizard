@@ -3,6 +3,12 @@ import json
 from pathlib import Path
 from pydub import AudioSegment
 
+HOME = os.path.expanduser('~')
+DATA_PATH = f"{HOME}/.wizard/data.json"
+
+def clean_string(string):
+    return string.replace("\n", " ")
+
 def file_to_text(path):
     with open(path) as f:
         text = f.read()
@@ -25,7 +31,7 @@ def list_files(path):
     return os.listdir(path)
 
 def get_url():
-    return json_to_dict("data.json").get("server")
+    return json_to_dict(DATA_PATH).get("server")
 
 def mp3_to_wav(mp3_path, wav_path):
     sound = AudioSegment.from_mp3(mp3_path)

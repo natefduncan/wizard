@@ -1,20 +1,13 @@
-from flask import Flask, Response, request, jsonify, send_file
+import os
+from pathlib import Path
+
+from flask import Flask, Response, request, jsonify, send_file, render_template
 app = Flask(__name__)
 
 from wizard import tts
 from wizard import utils
 from wizard.playlist import create_playlist
 
-"""
-def stream_playlist(name):
-    def generate():
-        with open(f"wizard/playlist/{name}.wav", "rb") as fwav:
-            data = fwav.read(1024)
-            while data:
-                yield data
-                data = fwav.read(1024)
-    return Response(generate(), mimetype="audio/mpeg3")
-"""
 def streamwav(name):
     def generate():
         with open(f"wizard/playlist/{name}.wav", "rb") as fwav:
@@ -26,42 +19,35 @@ def streamwav(name):
 
 @app.route("/add-file", methods=["POST"])
 def add():
-    text = request.json.get("text")
+    lines = request.json.get("lines")
+    print(lines)
     file_name = request.json.get("file_name")
-    if text:
-        speech = tts.text_to_speech(text)
-        tts.speech_to_file(speech, f"wizard/tmp/{file_name}.mp3")
-        utils.mp3_to_wav(f"wizard/tmp/{file_name}.mp3", f"wizard/audio/{file_name}.wav")
+    if lines:
+        Path(f'wizard/static/audio/{file_name}').mkdir(parents=True, exist_ok=True)
+        for idx, line in enumerate(lines):
+            speech = tts.text_to_speech(line)
+            tts.speech_to_file(speech, f"wizard/static/audio/{file_name}/{file_name}-{str(idx+1)}.mp3")
         return jsonify({"message" : "OK"})
     else:
         return jsonify({"message" : "FAILURE"})
 
-@app.route("/playlist/<name>")
-def playlist(name):
-    try:
-        d = utils.json_to_dict("data.json")
-    except Exception as e:
-        return jsonify({"message" : e})
-    playlist = d.get("playlists")
-    if name in playlist:
-        create_playlist(name, 10)
-        #return streamwav(name)
-        return send_file(f"playlist/{name}.wav", as_attachment=True)
-    else:
-        return jsonify({"message" : "FAILURE"})
+@app.route("/play/<name>")
+def play(name):
+    names = [i.replace(".mp3", "") for i in utils.list_files(f"wizard/static/audio/{name}")]
+    return render_template("player.html", names=sorted(names))
 
 @app.route("/add-playlist", methods=["POST"])
 def add_playlist():
     data = request.json
-    d = utils.json_to_dict("data.json")
+    d = utils.json_to_dict(utils.DATA_PATH)
     if not "playlists" in d:
         d["playlists"] = {}
     d["playlists"][data.get("name")] = data.get("files")
-    utils.dict_to_json(d, "data.json")
+    utils.dict_to_json(d, utils.DATA_PATH)
     return jsonify({"message" : "OK"})
 
 @app.route("/files", methods=["GET"])
 def files():
-    f = utils.list_files("wizard/audio")
+    f = utils.list_files("wizard/static/audio")
     return jsonify({"files" : f})
 

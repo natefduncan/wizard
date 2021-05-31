@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from pathlib import Path
 
 def create_playlist(name, length=5):
-    data = utils.json_to_dict("data.json")
+    data = utils.json_to_dict(utils.DATA_PATH)
     playlists = data.get("playlists")
     if playlists:
         output = AudioSegment.silent(duration=1000)

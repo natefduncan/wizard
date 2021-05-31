@@ -19,23 +19,28 @@ def server(host, port):
 
 @click.command()
 def init():
+    Path(f'{utils.HOME}/.wizard').mkdir(parents=True, exist_ok=True)
     ip = input("Type in host and port of server: ")
     try:
-        d = utils.json_to_dict("data.json")
+        d = utils.json_to_dict(utils.DATA_PATH)
     except:
         d = {}
     d["server"] = ip
-    utils.dict_to_json(d, "data.json")
+    utils.dict_to_json(d, utils.DATA_PATH)
     click.echo(f'Saved configuration.')
 
 @click.command()
 @click.argument('file')
-def add(file):
+@click.option('--d', default=".")
+def add(file, d):
     text = utils.file_to_text(file)
+    if d == ".":
+        text = utils.clean_string(text)
+    lines = [i for i in text.split(d) if i.strip()] 
     file_name = utils.get_file_name(file)
     url = utils.get_url()
     if url:
-        res = r.post(f'http://{url}/add-file', json={"text":text, "file_name":file_name})
+        res = r.post(f'http://{url}/add-file', json={"lines":lines, "file_name":file_name})
         if res.json().get("message") == "OK":
             click.echo(f'Added {file} to audio list.')
         else:
