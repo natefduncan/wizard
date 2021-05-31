@@ -34,7 +34,7 @@ def add():
 @app.route("/play/<name>")
 def play(name):
     names = [i.replace(".mp3", "") for i in utils.list_files(f"wizard/static/audio/{name}")]
-    return render_template("player.html", names=sorted(names))
+    return render_template("player.html", names=names)
 
 @app.route("/add-playlist", methods=["POST"])
 def add_playlist():
